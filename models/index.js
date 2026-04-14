@@ -6,7 +6,9 @@ import Entrega from './Entrega.js';
 const models = [Categoria,Produto, Pedido, Entrega];
 
 Object.values(models).forEach(model => {
+
   if (model.associate) {
+    
     model.associate(models);
   }
 });
