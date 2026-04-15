@@ -16,6 +16,12 @@ export default class Pedido extends Model {
             foreignKey: 'pedido_id',
             as: 'avaliacao'
         });
+
+        Pedido.belongsToMany(models.Produto, {
+            through: 'pedido_produtos',
+            foreignKey: 'pedido_id',
+            as: 'produtos'
+        });
     }
 };
 

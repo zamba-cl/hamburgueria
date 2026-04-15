@@ -1,4 +1,5 @@
 import Avaliacao from "../models/Avaliacao.js";
+import Pedido from "../models/Pedido.js";
 
 const AvaliacaoController = {
 
@@ -20,7 +21,12 @@ const AvaliacaoController = {
 
         try {
 
-            const avaliacoes = await Avaliacao.findAll();
+            const avaliacoes = await Avaliacao.findAll({
+
+                include: [
+                    { model: Pedido, as: 'pedido' }
+                ]
+            });
 
             if (avaliacoes.length === 0) {
 
@@ -40,7 +46,12 @@ const AvaliacaoController = {
 
         try {
 
-            const avaliacao = await Avaliacao.findByPk(req.params.id);
+            const avaliacao = await Avaliacao.findByPk(req.params.id, {
+
+                include: [
+                    { model: Pedido, as: 'pedido' }
+                ]
+            });
 
             if (avaliacao) {
 

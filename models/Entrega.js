@@ -16,6 +16,12 @@ export default class Entrega extends Model {
 Entrega.init(
 
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+
         pedido_id: {
             type: DataTypes.INTEGER,
             allowNull: false,

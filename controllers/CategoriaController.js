@@ -1,4 +1,6 @@
 import Categoria from "../models/Categoria.js";
+import Produto from "../models/Produto.js";
+
 
 const CategoriaController = {
 
@@ -20,7 +22,12 @@ const CategoriaController = {
 
     try {
 
-      const categorias = await Categoria.findAll();
+      const categorias = await Categoria.findAll({
+
+        include: [
+          { model: Produto, as: 'produtos' }
+        ]
+      });
 
       if (categorias.length === 0) {
 
@@ -40,7 +47,12 @@ const CategoriaController = {
 
     try {
 
-      const categoria = await Categoria.findByPk(req.params.id);
+      const categoria = await Categoria.findByPk(req.params.id, {
+
+        include: [
+          { model: Produto, as: 'produtos' }
+        ]
+      });
 
       if (categoria) {
 

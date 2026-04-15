@@ -1,4 +1,8 @@
 import Pedido from "../models/Pedido.js";
+import Entrega from "../models/Entrega.js";
+import Avaliacao from "../models/Avaliacao.js";
+import Produto from "../models/Produto.js";
+
 
 const PedidoController = {
 
@@ -20,7 +24,14 @@ const PedidoController = {
 
         try {
 
-            const pedidos = await Pedido.findAll();
+            const pedidos = await Pedido.findAll({
+
+                include: [
+                    { model: Produto, as: 'produtos' },
+                    { model: Entrega, as: 'entrega' },
+                    { model: Avaliacao, as: 'avaliacao' }
+                ]
+            });
 
             if (pedidos.length === 0) {
 
@@ -40,7 +51,13 @@ const PedidoController = {
 
         try {
 
-            const pedido = await Pedido.findByPk(req.params.id);
+            const pedido = await Pedido.findByPk(req.params.id, {
+                
+                include: [
+                    { model: Entrega, as: 'entrega' },
+                    { model: Avaliacao, as: 'avaliacao' }
+                ]
+            });
 
             if (pedido) {
 

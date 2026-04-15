@@ -10,12 +10,24 @@ export default class Produto extends Model {
       foreignKey: 'categoriaId',
       as: 'categoria'
     });
+
+    Produto.belongsToMany(models.Pedido, {
+      through: 'pedido_produtos',
+      foreignKey: 'produto_id',
+      as: 'pedidos'
+    });
   }
 }
 
 Produto.init(
 
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
     nome: { type: DataTypes.STRING, allowNull: false },
     descricao: { type: DataTypes.TEXT },
 
