@@ -1,96 +1,132 @@
 import Entrega from '../models/Entrega.js';
 
-class EntregaController {
+const EntregaController = {
 
-    async index(req, res) {
-
-        try {
-
-            const entregas = await Entrega.findAll();
-            res.status(200).json(entregas);
-        } 
-        
-        catch (error) {
-
-            res.status(500).json({ error: error.message });
-        }
-    }
-
-    async show(req, res) {
-
-        try {
-
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
-
-            if (!entrega) {
-
-                return res.status(404).json({ error: 'Entrega não encontrada' });
-            }
-
-            res.status(200).json(entrega);
-        } 
-        
-        catch (error) {
-
-            res.status(500).json({ error: error.message });
-        }
-    }
-
-    async store(req, res) {
+    create: async (req, res) => {
 
         try {
 
             const entrega = await Entrega.create(req.body);
             res.status(201).json(entrega);
-        } 
-        
+        }
+
         catch (error) {
 
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: error.message });
         }
-    }
+    },
 
-    async update(req, res) {
+    findAll: async (req, res) => {
 
         try {
 
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
+            const entregas = await Entrega.findAll();
 
-            if (!entrega) {
+            if (entregas.length === 0) {
 
-                return res.status(404).json({ error: 'Entrega não encontrada' });
+                throw new Error('Nenhuma entrega encontrada');
             }
 
-            await entrega.update(req.body);
-            res.status(200).json(entrega);
-        } 
-        
+            res.status(200).json(entregas);
+        }
+
         catch (error) {
 
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: error.message });
         }
-    }
+    },
 
-    async destroy(req, res) {
+    findById: async (req, res) => {
 
         try {
 
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
+            const entrega = await Entrega.findByPk(req.params.id);
 
-            if (!entrega) {
+            if (entrega) {
 
-                return res.status(404).json({ error: 'Entrega não encontrada' });
+                res.status(200).json(entrega);
             }
 
-            await entrega.destroy();
-            res.status(204).send();
-        } 
-        
+            else {
+
+                res.status(404).json({ error: 'Entrega nao encontrada' });
+            }
+        }
+
         catch (error) {
-            
+
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    update: async (req, res) => {
+
+        try {
+
+            const entrega = await Entrega.findByPk(req.params.id);
+
+            if (entrega) {
+
+                await entrega.update(req.body);
+                res.status(200).json(entrega);
+            }
+
+            else {
+
+                res.status(404).json({ error: 'Entrega nao encontrada' });
+            }
+        }
+
+        catch (error) {
+
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    delete: async (req, res) => {
+
+        try {
+
+            const entrega = await Entrega.findByPk(req.params.id);
+
+            if (entrega) {
+
+                await entrega.destroy();
+                res.status(200).json({ message: 'Entrega excluida com sucesso' });
+            }
+
+            else {
+
+                res.status(404).json({ error: 'Entrega nao encontrada' });
+            }
+        }
+
+        catch (error) {
+
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    restaure: async (req, res) => {
+
+        try {
+
+            const entrega = await Entrega.findByPk(req.params.id, { paranoid: false });
+
+            if (entrega) {
+
+                await entrega.restore();
+                res.status(200).json({ message: 'Entrega restaurada com sucesso' });
+            }
+
+            else {
+
+                res.status(404).json({ error: 'Entrega nao encontrada' });
+            }
+        }
+
+        catch (error) {
+
             res.status(500).json({ error: error.message });
         }
     }

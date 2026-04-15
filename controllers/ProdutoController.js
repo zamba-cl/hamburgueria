@@ -1,91 +1,136 @@
 import Produto from '../models/Produto.js';
 
-export const criar = async (req, res) => {
+const ProdutoController = {
 
-    try {
+    create: async (req, res) => {
 
-        const produto = await Produto.create(req.body);
-        res.status(201).json(produto);
-    } 
-    
-    catch (error) {
+        try {
 
-        res.status(400).json({ erro: error.message });
-    }
-};
-
-export const listar = async (req, res) => {
-
-    try {
-
-        const produtos = await Produto.findAll();
-        res.status(200).json(produtos);
-    } 
-    
-    catch (error) {
-
-        res.status(500).json({ erro: error.message });
-    }
-};
-
-export const obterPorId = async (req, res) => {
-
-    try {
-
-        const produto = await Produto.findByPk(req.params.id);
-
-        if (!produto) {
-
-            return res.status(404).json({ erro: 'Produto não encontrado' });
+            const produto = await Produto.create(req.body);
+            res.status(201).json(produto);
         }
 
-        res.status(200).json(produto);
-    } 
-    
-    catch (error) {
+        catch (error) {
 
-        res.status(500).json({ erro: error.message });
-    }
-};
+            res.status(400).json({ erro: error.message });
+        }
+    },
 
-export const atualizar = async (req, res) => {
+    findAll: async (req, res) => {
+
+        try {
+
+            const produtos = await Produto.findAll();
+
+            if (produtos.length === 0) {
+
+                throw new Error('Nenhum produto encontrado');
+            }
+
+            res.status(200).json(produtos);
+        }
+
+        catch (error) {
+
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    findById: async (req, res) => {
+
+        try {
+
+            const produto = await Produto.findByPk(req.params.id);
+
+            if (produto) {
+
+                res.status(200).json(produto);
+            }
+            
+            else {
+                
+                res.status(404).json({ error: 'Produto não encontrado' });
+            }            
+        }
+
+        catch (error) {
+
+            res.status(500).json({ erro: error.message });
+        }
+    },
+
+    update: async (req, res) => {
+
+        try {
+
+            const produto = await Produto.findByPk(req.params.id);
+
+            if (produto) {
+
+                await produto.update(req.body);
+                res.status(200).json(produto);
+            }
+
+            else {
+
+                res.status(404).json({ erro: 'Produto não encontrado' });
+            }
+        }
+
+        catch (error) {
+
+            res.status(500).json({ erro: error.message });
+        }
+    },
+
+    delete: async (req, res) => {
+
+        try {
+
+            const produto = await Produto.findByPk(req.params.id);
+
+            if (produto) {
+
+                await produto.destroy();
+                res.status(200).json({ message: 'Produto excluido com sucesso' });
+            }
+
+            else {
+
+                return res.status(404).json({ erro: 'Produto não encontrado' });
+            }
+
+        }
+
+        catch (error) {
+
+            res.status(500).json({ erro: error.message });
+        }
+    },
+
+    restaure: async (req, res) => {
 
     try {
 
-        const produto = await Produto.findByPk(req.params.id);
+      const produto = await Produto.findByPk(req.params.id, { paranoid: false });
 
-        if (!produto) {
+      if (produto) {
 
-            return res.status(404).json({ erro: 'Produto não encontrado' });
-        }
+        await produto.restore();
+        res.status(200).json({ message: 'Produto restaurado com sucesso' });
+      }
 
-        await produto.update(req.body);
-        res.status(200).json(produto);
-    } 
-    
+      else {
+
+        res.status(404).json({ error: 'Produto nao encontrado' });
+      }
+    }
+
     catch (error) {
 
-        res.status(400).json({ erro: error.message });
+      res.status(500).json({ error: error.message });
     }
+  }
 };
 
-export const deletar = async (req, res) => {
-
-    try {
-
-        const produto = await Produto.findByPk(req.params.id);
-
-        if (!produto) {
-
-            return res.status(404).json({ erro: 'Produto não encontrado' });
-        }
-
-        await produto.destroy();
-        res.status(204).send();
-    } 
-    
-    catch (error) {
-        
-        res.status(500).json({ erro: error.message });
-    }
-};
+export default ProdutoController;
